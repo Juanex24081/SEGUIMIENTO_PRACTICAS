@@ -1,7 +1,22 @@
 package seguimiento_practicas;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Image;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
 
 public class DashboardDirector extends JFrame {
 
@@ -24,10 +39,10 @@ public class DashboardDirector extends JFrame {
     JButton btn = new JButton(texto);
 
     try {
-        java.net.URL url = getClass().getResource("/src/icons/" + icono);
+        java.net.URL url = getClass().getResource("/icons/" + icono);
 
-        System.out.println(System.getProperty("user.dir"));
-        System.out.println(getClass().getResource("/icons/user.png"));
+        /*System.out.println(System.getProperty("user.dir"));*/
+        /*System.out.println(getClass().getResource("/icons/user.png"));*/
 
         if (url != null) {
             ImageIcon icon = new ImageIcon(url);
