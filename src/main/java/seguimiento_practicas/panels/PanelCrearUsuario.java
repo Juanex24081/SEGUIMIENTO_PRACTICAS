@@ -77,7 +77,7 @@ public class PanelCrearUsuario extends JPanel {
     private JPanel crearCampo(String texto, String icono) {
 
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setMaximumSize(new Dimension(300, 45));
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
         panel.setBackground(Color.WHITE);
 
         JLabel label = new JLabel(texto);
@@ -85,8 +85,8 @@ public class PanelCrearUsuario extends JPanel {
 
         JTextField txt = new JTextField();
         txt.setPreferredSize(new Dimension(200, 30));
+        txt.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
 
-        // ICONO
         JLabel iconLabel = crearIcono(icono);
 
         panel.add(iconLabel, BorderLayout.WEST);
@@ -96,6 +96,7 @@ public class PanelCrearUsuario extends JPanel {
 
         return panel;
     }
+
 
     private JPanel crearCampoPassword(String texto, String icono) {
 
