@@ -1,9 +1,13 @@
 package seguimiento_practicas.panels;
 
-import seguimiento_practicas.ui_components.CardSesion;
+import java.awt.Color;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+
+import seguimiento_practicas.ui_components.CardSesion;
 
 public class PanelSesiones extends JPanel {
 
@@ -18,7 +22,7 @@ public class PanelSesiones extends JPanel {
             "PENDIENTE",
             "Empresa X",
             "Juan Pérez",
-            () -> abrirSesion(1)
+            () -> abrirDetalle(1)
         ));
 
         add(new CardSesion(
@@ -26,7 +30,7 @@ public class PanelSesiones extends JPanel {
             "EN REVISIÓN",
             "Empresa Y",
             "Ana López",
-            () -> abrirSesion(2)
+            () -> abrirDetalle(2)
         ));
 
         add(new CardSesion(
@@ -34,13 +38,13 @@ public class PanelSesiones extends JPanel {
             "ENTREGADA",
             "Empresa Z",
             "Carlos Ruiz",
-            () -> abrirSesion(3)
+            () -> abrirDetalle(3)
         ));
     }
 
-    private void abrirSesion(int id) {
+    /*private void abrirSesion(int id) {
         JOptionPane.showMessageDialog(this, "Abrir sesión " + id);
-    }
+    }*/
 
     // FALTA IMPLEMENTAR
 
