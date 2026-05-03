@@ -19,6 +19,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import seguimiento_practicas.ui_components.PlaceholderTextField;
+
 public class PanelCrearUsuario extends JPanel {
 
     private JTextField txtNombre, txtCorreo;
@@ -43,7 +45,7 @@ public class PanelCrearUsuario extends JPanel {
         panelForm.setBackground(Color.WHITE);
 
         // CENTRAR TODO
-        panelForm.add(Box.createVerticalGlue());
+        panelForm.add(Box.createVerticalStrut(20));
 
         panelForm.add(crearCampo("Nombre", "user.png"));
         panelForm.add(Box.createVerticalStrut(10));
@@ -77,26 +79,26 @@ public class PanelCrearUsuario extends JPanel {
     private JPanel crearCampo(String texto, String icono) {
 
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
+        panel.setMaximumSize(new Dimension(300, 45));
         panel.setBackground(Color.WHITE);
 
         JLabel label = new JLabel(texto);
         label.setFont(new Font("Times New Roman", Font.BOLD, 14));
 
-        JTextField txt = new JTextField();
+        PlaceholderTextField txt = new PlaceholderTextField("Ingrese " + texto.toLowerCase());
         txt.setPreferredSize(new Dimension(200, 30));
-        txt.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
 
+        // ICONO
         JLabel iconLabel = crearIcono(icono);
 
-        panel.add(iconLabel, BorderLayout.WEST);
+        /*panel.add(iconLabel, BorderLayout.WEST);*/
         panel.add(txt, BorderLayout.CENTER);
+        /*panel.add(label, BorderLayout.CENTER);*/
 
         panel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         return panel;
     }
-
 
     private JPanel crearCampoPassword(String texto, String icono) {
 
@@ -104,11 +106,12 @@ public class PanelCrearUsuario extends JPanel {
         panel.setMaximumSize(new Dimension(300, 45));
         panel.setBackground(Color.WHITE);
 
-        JPasswordField txt = new JPasswordField();
+        PlaceholderTextField txt = new PlaceholderTextField("Ingrese " + texto.toLowerCase());
+        txt.setPreferredSize(new Dimension(200, 30));
 
         JLabel iconLabel = crearIcono(icono);
 
-        panel.add(iconLabel, BorderLayout.WEST);
+        /*panel.add(iconLabel, BorderLayout.WEST);*/
         panel.add(txt, BorderLayout.CENTER);
 
         panel.setAlignmentX(Component.CENTER_ALIGNMENT);
