@@ -58,25 +58,26 @@ public class DashboardDirector extends JFrame {
             System.out.println("No se encontró el icono: " + icono);
         }
 
-    } catch (Exception e) {
-        System.out.println("Error cargando icono: " + icono);
+        } catch (Exception e) {
+            System.out.println("Error cargando icono: " + icono);
+        }
+
+        btn.setHorizontalAlignment(SwingConstants.LEFT);
+        btn.setIconTextGap(10);
+
+        btn.setBackground(new Color(52, 73, 94));
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("Times New Roman", Font.BOLD, 14));
+
+        btn.setFocusPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        btn.setMaximumSize(new Dimension(200, 45));
+        btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        return btn;
+
     }
-
-    btn.setHorizontalAlignment(SwingConstants.LEFT);
-    btn.setIconTextGap(10);
-
-    btn.setBackground(new Color(52, 73, 94));
-    btn.setForeground(Color.WHITE);
-    btn.setFont(new Font("Times New Roman", Font.BOLD, 14));
-
-    btn.setFocusPainted(false);
-    btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-    btn.setMaximumSize(new Dimension(200, 45));
-    btn.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-    return btn;
-}
 
     // CAMBIO DE PANEL CON "ANIMACIÓN"
     private void cambiarPanel(JPanel nuevo) {
