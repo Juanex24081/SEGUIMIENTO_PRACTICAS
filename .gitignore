@@ -1,0 +1,4 @@
+# Ignora Target y VS Code
+
+target/
+.vscode/
