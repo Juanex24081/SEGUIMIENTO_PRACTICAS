@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package seguimiento_practicas.dao;
 
 import java.sql.Connection;
@@ -12,12 +8,13 @@ import java.sql.Statement;
 import seguimiento_practicas.util.Conexion;
 
 public class UsuarioDAO {
+
     public ResultSet validarUsuario(String correo, String pass) {
 
-        String sql = "SELECT * FROM usuarios WHERE correo=? AND contraseña=?";
+        String sql = "SELECT * FROM usuarios WHERE correo=? AND contrasena=?";
 
         try {
-            Connection con = Conexion.conectar();
+            Connection con = Conexion.getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
 
             ps.setString(1, correo);
@@ -31,10 +28,11 @@ public class UsuarioDAO {
         }
     }
 
-     public void insertar(String nombre, String correo, String pass, String rol) {
-        String sql = "INSERT INTO usuarios(nombre, correo, contraseña, rol) VALUES(?,?,?,?)";
+    public void insertar(String nombre, String correo, String pass, String rol) {
 
-        try (Connection con = Conexion.conectar();
+        String sql = "INSERT INTO usuarios(nombre, correo, contrasena, rol) VALUES(?,?,?,?)";
+
+        try (Connection con = Conexion.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, nombre);
@@ -45,33 +43,37 @@ public class UsuarioDAO {
             ps.executeUpdate();
 
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("Error insertar: " + e.getMessage());
         }
     }
 
     public ResultSet listar() {
+
         String sql = "SELECT * FROM usuarios";
+
         try {
-            Connection con = Conexion.conectar();
+            Connection con = Conexion.getConnection();
             Statement st = con.createStatement();
             return st.executeQuery(sql);
-            
+
         } catch (Exception e) {
+            System.out.println("Error listar: " + e.getMessage());
             return null;
         }
     }
 
     public void eliminar(int id) {
-        String sql = "DELETE FROM usuarios WHERE id_usuario=?";
-        try (Connection con = Conexion.conectar();
+
+        String sql = "DELETE FROM usuarios WHERE id=?";
+
+        try (Connection con = Conexion.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, id);
             ps.executeUpdate();
 
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("Error eliminar: " + e.getMessage());
         }
     }
 }
-

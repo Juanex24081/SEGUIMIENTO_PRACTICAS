@@ -6,22 +6,25 @@ package seguimiento_practicas.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class Conexion {
 
-    private static final String URL = "jdbc:oracle:thin:@localhost:1522/XEPDB1";
+    private static final String URL = "jdbc:oracle:thin:@localhost:1522:ORCL";
     private static final String USER = "practicas";
-    private static final String PASSWORD = "practicas";
+    private static final String PASS = "practicas";
 
-    public static Connection conectar() {
+    private static Connection con;
+
+    public static Connection getConnection() {
         try {
-            Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("Conectado a Oracle");
-            return conn;
-
-        } catch (Exception e) {
-            System.out.println("Error de conexión: " + e.getMessage());
-            return null;
+            if (con == null || con.isClosed()) {
+                con = DriverManager.getConnection(URL, USER, PASS);
+                System.out.println("✔ Conexión exitosa a Oracle");
+            }
+        } catch (SQLException e) {
+            System.out.println("❌ Error de conexión: " + e.getMessage());
         }
+        return con;
     }
 }
