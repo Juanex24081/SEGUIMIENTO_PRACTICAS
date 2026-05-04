@@ -2,8 +2,12 @@ package seguimiento_practicas.panels;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
+import seguimiento_practicas.dao.BitacoraDAO;
+import seguimiento_practicas.model.BitacoraResultadoDTO;
 import seguimiento_practicas.model.SesionDTO;
+import seguimiento_practicas.session.UsuarioSesion;
 
 public class PanelDetalleSesion extends JPanel {
 
@@ -88,19 +92,70 @@ public class PanelDetalleSesion extends JPanel {
         panel.setBackground(Color.WHITE);
         panel.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
 
-        JButton btnBitacoras = new JButton("Ver Bitácoras");
+        JButton btnVerResultado = new JButton("Ver Resultado");
         JButton btnSubir = new JButton("Subir Bitácora");
 
-        panel.add(btnBitacoras);
+        panel.add(btnVerResultado);
         panel.add(btnSubir);
 
         // acciones (luego las conectamos)
-        btnBitacoras.addActionListener(e ->
-                JOptionPane.showMessageDialog(this, "Abrir bitácoras"));
+        btnVerResultado.addActionListener(e -> mostrarResultado());
 
-        btnSubir.addActionListener(e ->
-                JOptionPane.showMessageDialog(this, "Subir archivo"));
+        btnSubir.addActionListener(e -> subirBitacora());
 
         return panel;
+    }
+
+    private void mostrarResultado() {
+
+        int idSesion = sesion.id;
+        Long idEstudiante = seguimiento_practicas.session.UsuarioSesion.usuarioActual.getId();
+
+        BitacoraDAO dao = new BitacoraDAO();
+        BitacoraResultadoDTO b = dao.obtenerPorSesionYEstudiante(idSesion, idEstudiante);
+
+        if (b == null) {
+            JOptionPane.showMessageDialog(this, "Aún no hay bitácora registrada.");
+            return;
+        }
+
+        String mensaje = """
+            Estado: %s
+
+            Calificación: %d
+
+            Comentario:
+            %s
+            """.formatted(
+                b.estado,
+                b.calificacion,
+                b.comentario
+        );
+
+        JOptionPane.showMessageDialog(this, mensaje, "Resultado de Bitácora", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+
+
+    private void subirBitacora() {
+
+        JFileChooser fileChooser = new JFileChooser();
+
+        int opcion = fileChooser.showOpenDialog(this);
+
+        if (opcion == JFileChooser.APPROVE_OPTION) {
+
+            String ruta = fileChooser.getSelectedFile().getAbsolutePath();
+
+            int idSesion = sesion.id;
+            Long idEstudiante = seguimiento_practicas.session.UsuarioSesion.usuarioActual.getId();
+
+            seguimiento_practicas.dao.BitacoraDAO dao = new seguimiento_practicas.dao.BitacoraDAO();
+
+            /*dao.insertar(idEstudiante, idSesion, ruta);*/
+            dao.guardar(idEstudiante, idSesion, ruta);
+
+            JOptionPane.showMessageDialog(this, "Bitácora subida correctamente");
+        }
     }
 }

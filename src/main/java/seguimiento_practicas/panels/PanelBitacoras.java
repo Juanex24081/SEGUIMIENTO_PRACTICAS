@@ -1,33 +1,36 @@
 package seguimiento_practicas.panels;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
+import seguimiento_practicas.dao.BitacoraDAO;
+import seguimiento_practicas.model.BitacoraListaDTO;
+import seguimiento_practicas.session.UsuarioSesion;
+import seguimiento_practicas.ui_components.CardBitacora;
 
 public class PanelBitacoras extends JPanel {
 
+    private BitacoraDAO dao = new BitacoraDAO();
+
     public PanelBitacoras() {
 
-        setLayout(new BorderLayout());
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBackground(Color.WHITE);
 
-        JLabel titulo = new JLabel("Bitácoras Entregadas", SwingConstants.CENTER);
-        titulo.setFont(new Font("Times New Roman", Font.BOLD, 22));
+        cargarBitacoras();
+    }
 
-        add(titulo, BorderLayout.NORTH);
+    private void cargarBitacoras() {
 
-        DefaultListModel<String> modelo = new DefaultListModel<>();
+        Long id = UsuarioSesion.usuarioActual.getId();
 
-        modelo.addElement("Sesión 1 - Entregada");
-        modelo.addElement("Sesión 2 - Pendiente");
+        ArrayList<BitacoraListaDTO> lista = dao.listarPorEstudiante(id);
 
-        JList<String> lista = new JList<>(modelo);
+        for (BitacoraListaDTO b : lista) {
 
-        add(new JScrollPane(lista), BorderLayout.CENTER);
+            add(new CardBitacora(b));
+            add(Box.createVerticalStrut(10));
+        }
     }
 }
