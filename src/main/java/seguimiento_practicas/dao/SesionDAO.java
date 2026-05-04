@@ -1,0 +1,90 @@
+package seguimiento_practicas.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+
+import seguimiento_practicas.model.SesionDTO;
+import seguimiento_practicas.util.Conexion;
+
+public class SesionDAO {
+
+    public ArrayList<Object[]> listarPorDocente(int idDocente) {
+
+        ArrayList<Object[]> lista = new ArrayList<>();
+
+        String sql = """
+            SELECT s.id, s.estado, s.fecha,
+                   c.empresa
+            FROM sesiones s
+            JOIN convenios c ON s.id_convenio = c.id
+            WHERE s.id_docente = ?
+        """;
+
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idDocente);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                lista.add(new Object[]{
+                        rs.getInt("id"),
+                        rs.getString("estado"),
+                        rs.getDate("fecha"),
+                        rs.getString("empresa")
+                });
+            }
+
+        } catch (Exception e) {
+            System.out.println("SesionDAO: " + e.getMessage());
+        }
+
+        return lista;
+    }
+
+    public ArrayList<SesionDTO> listarPorEstudiante(Long idEstudiante) {
+
+        /* DEBUG */
+        System.out.println("Buscando sesiones para estudiante: " + idEstudiante);
+
+        ArrayList<SesionDTO> lista = new ArrayList<>();
+
+        String sql = """
+            SELECT s.id, s.estado, s.fecha,
+                   c.empresa,
+                   es.estado_entrega
+            FROM sesiones s
+            JOIN estudiante_sesion es ON es.id_sesion = s.id
+            JOIN convenios c ON c.id = s.id_convenio
+            WHERE es.id_estudiante = ?
+        """;
+
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setLong(1, idEstudiante);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                lista.add(new SesionDTO(
+                    rs.getInt("id"),
+                    rs.getString("estado"),
+                    rs.getString("empresa"),
+                    rs.getString("docente"),
+                    rs.getString("fecha")
+                ));
+            }
+
+        } catch (Exception e) {
+            System.out.println("SesionDAO estudiante: " + e.getMessage());
+        }
+
+        return lista;
+    }
+}

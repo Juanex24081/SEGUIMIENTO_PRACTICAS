@@ -1,32 +1,29 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package seguimiento_practicas.model;
 
-/**
- *
- * @author USUARIO
- */
 public class Usuario {
-  private int id;
+
+    private long id;
     private String nombre;
     private String correo;
-    private String password;
+    private String contrasena;
     private String rol;
+    private long cedula;
 
     public Usuario() {}
 
-    public Usuario(int id, String nombre, String correo, String password, String rol) {
+    public Usuario(long id, String nombre, String correo, String contrasena, String rol, long cedula) {
         this.id = id;
         this.nombre = nombre;
         this.correo = correo;
-        this.password = password;
+        this.contrasena = contrasena;
         this.rol = rol;
+        this.cedula = cedula;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    // Getters y setters
+
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -34,9 +31,12 @@ public class Usuario {
     public String getCorreo() { return correo; }
     public void setCorreo(String correo) { this.correo = correo; }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public String getContrasena() { return contrasena; }
+    public void setContrasena(String contrasena) { this.contrasena = contrasena; }
 
     public String getRol() { return rol; }
     public void setRol(String rol) { this.rol = rol; }
+
+    public long getCedula() { return cedula; }
+    public void setCedula(long cedula) { this.cedula = cedula; }
 }

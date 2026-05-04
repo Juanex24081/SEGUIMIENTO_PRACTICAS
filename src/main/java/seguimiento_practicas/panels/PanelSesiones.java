@@ -1,62 +1,57 @@
 package seguimiento_practicas.panels;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import seguimiento_practicas.dao.SesionDAO;
+import seguimiento_practicas.model.SesionDTO;
+import seguimiento_practicas.session.UsuarioSesion;
 import seguimiento_practicas.ui_components.CardSesion;
 
 public class PanelSesiones extends JPanel {
 
+    private SesionDAO dao = new SesionDAO();
+
     public PanelSesiones() {
+
+        /* DEBUG */
+        System.out.println("Usuario logueado ID: " + UsuarioSesion.usuarioActual.getId());
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.WHITE);
 
-        add(Box.createVerticalStrut(10));
-
-        add(new CardSesion(
-            "Sesión 1",
-            "PENDIENTE",
-            "Empresa X",
-            "Juan Pérez",
-            () -> abrirDetalle(1)
-        ));
-
-        add(new CardSesion(
-            "Sesión 2",
-            "EN REVISIÓN",
-            "Empresa Y",
-            "Ana López",
-            () -> abrirDetalle(2)
-        ));
-
-        add(new CardSesion(
-            "Sesión 3",
-            "ENTREGADA",
-            "Empresa Z",
-            "Carlos Ruiz",
-            () -> abrirDetalle(3)
-        ));
+        cargarSesiones();
     }
 
-    /*private void abrirSesion(int id) {
-        JOptionPane.showMessageDialog(this, "Abrir sesión " + id);
-    }*/
+    private void cargarSesiones() {
 
-    // FALTA IMPLEMENTAR
+        removeAll();
 
-    private void abrirDetalle(int numeroSesion) {
-        JDialog dialog = new JDialog();
-        dialog.setTitle("Detalle Sesión " + numeroSesion);
-        dialog.setSize(400, 300);
-        dialog.setLocationRelativeTo(this);
+        Long idUsuario = UsuarioSesion.usuarioActual.getId();
 
-        dialog.add(new PanelDetalleSesion(numeroSesion));
+        ArrayList<SesionDTO> sesiones =
+                dao.listarPorEstudiante(idUsuario);
 
-        dialog.setVisible(true);
+        for (SesionDTO s : sesiones) {
+
+            add(new CardSesion(
+                    s,
+                    () -> abrirSesion(s.id)
+            ));
+
+            add(Box.createVerticalStrut(10));
+        }
+
+        revalidate();
+        repaint();
+    }
+
+    private void abrirSesion(int idSesion) {
+        JOptionPane.showMessageDialog(this, "Abrir sesión " + idSesion);
     }
 }
-
