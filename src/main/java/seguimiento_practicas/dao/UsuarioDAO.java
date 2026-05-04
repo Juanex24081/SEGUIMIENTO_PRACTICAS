@@ -47,33 +47,26 @@ public class UsuarioDAO {
 
     /* LISTAR USUARIOS */
 
-        public ArrayList<Usuario> listar() {
+    public ArrayList<Object[]> listarUsuarios() {
 
-        ArrayList<Usuario> lista = new ArrayList<>();
+        ArrayList<Object[]> lista = new ArrayList<>();
 
-        String sql = "SELECT * FROM usuarios";
+        String sql = "SELECT ID, NOMBRE, ROL FROM usuarios";
 
-        try {
-            Connection con = Conexion.getConnection();
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(sql);
+        try (Connection con = Conexion.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-
-                Usuario u = new Usuario(
-                    rs.getLong("id"),
+                lista.add(new Object[]{
+                    rs.getInt("id"),
                     rs.getString("nombre"),
-                    rs.getString("correo"),
-                    rs.getString("contrasena"),
-                    rs.getString("rol"),
-                    rs.getLong("cedula")
-                );
-
-                lista.add(u);
+                    rs.getString("rol")
+                });
             }
 
         } catch (Exception e) {
-            System.out.println("Error listar DAO: " + e.getMessage());
+            System.out.println("Error listar: " + e.getMessage());
         }
 
         return lista;
@@ -82,42 +75,62 @@ public class UsuarioDAO {
 
     /* INSERTAR USUARIO */
 
-        public void insertar(Usuario u) {
+    public void insertar(String nombre, String correo, String pass, String rol) {
 
-        String sql = "INSERT INTO usuarios(nombre, correo, contrasena, rol) VALUES (?,?,?,?)";
+        String sql = """
+            INSERT INTO usuarios (id, nombre, correo, contrasena, rol)
+            VALUES (usuarios_seq.NEXTVAL, ?, ?, ?, ?)
+        """;
 
-        try {
-            Connection con = Conexion.getConnection();
-            PreparedStatement ps = con.prepareStatement(sql);
+        try (Connection con = Conexion.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, u.getNombre());
-            ps.setString(2, u.getCorreo());
-            ps.setString(3, u.getContrasena());
-            ps.setString(4, u.getRol());
+            ps.setString(1, nombre);
+            ps.setString(2, correo);
+            ps.setString(3, pass);
+            ps.setString(4, rol);
 
             ps.executeUpdate();
 
         } catch (Exception e) {
-            System.out.println("Error insertar DAO: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     
     /* ELIMINAR USUARIO */
 
-        public void eliminar(long id) {
+    public void eliminarUsuario(int id) {
 
-        String sql = "DELETE FROM usuarios WHERE id=?";
+        String sql = "DELETE FROM usuarios WHERE ID = ?";
 
-        try {
-            Connection con = Conexion.getConnection();
-            PreparedStatement ps = con.prepareStatement(sql);
+        try (Connection con = Conexion.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setLong(1, id);
+            ps.setInt(1, id);
             ps.executeUpdate();
 
         } catch (Exception e) {
-            System.out.println("Error eliminar DAO: " + e.getMessage());
+            System.out.println("Error eliminar: " + e.getMessage());
+        }
+    }
+
+
+    public void actualizarUsuario(int id, String nombre, String rol) {
+
+        String sql = "UPDATE usuarios SET nombre=?, rol=? WHERE ID=?";
+
+        try (Connection con = Conexion.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, nombre);
+            ps.setString(2, rol);
+            ps.setInt(3, id);
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            System.out.println("Error actualizar: " + e.getMessage());
         }
     }
 }

@@ -14,11 +14,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import seguimiento_practicas.dao.UsuarioDAO;
 import seguimiento_practicas.ui_components.PlaceholderTextField;
 
 public class PanelCrearUsuario extends JPanel {
@@ -69,11 +71,50 @@ public class PanelCrearUsuario extends JPanel {
         btnGuardar.setMaximumSize(new Dimension(150, 40));
 
         panelForm.add(btnGuardar);
+        btnGuardar.addActionListener(e -> guardarUsuario());
 
         panelForm.add(Box.createVerticalGlue());
 
         add(panelForm, BorderLayout.CENTER);
     }
+
+    /* GUARDAR USUARIO EN BD */
+
+    private void guardarUsuario() {
+
+        String nombre = txtNombre.getText();
+        String correo = txtCorreo.getText();
+        String pass = new String(txtPassword.getPassword());
+        String rol = comboRol.getSelectedItem().toString().toUpperCase();
+
+        if (nombre.isEmpty() || correo.isEmpty() || pass.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Completa todos los campos");
+            return;
+        }
+
+        try {
+            UsuarioDAO dao = new UsuarioDAO();
+            dao.insertar(nombre, correo, pass, rol);
+
+            JOptionPane.showMessageDialog(this, "Usuario creado correctamente");
+
+            limpiarCampos();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al guardar");
+        }
+    }
+
+    private void limpiarCampos() {
+        txtNombre.setText("");
+        txtCorreo.setText("");
+        txtPassword.setText("");
+        comboRol.setSelectedIndex(0);
+    }
+
+
+    
 
     // CAMPO CON ICONO
     private JPanel crearCampo(String texto, String icono) {
@@ -82,19 +123,17 @@ public class PanelCrearUsuario extends JPanel {
         panel.setMaximumSize(new Dimension(300, 45));
         panel.setBackground(Color.WHITE);
 
-        JLabel label = new JLabel(texto);
-        label.setFont(new Font("Times New Roman", Font.BOLD, 14));
-
         PlaceholderTextField txt = new PlaceholderTextField("Ingrese " + texto.toLowerCase());
         txt.setPreferredSize(new Dimension(200, 30));
 
-        // ICONO
-        JLabel iconLabel = crearIcono(icono);
+        // GUARDAR REFERENCIA
+        if (texto.equals("Nombre")) {
+            txtNombre = txt;
+        } else if (texto.equals("Correo")) {
+            txtCorreo = txt;
+        }
 
-        /*panel.add(iconLabel, BorderLayout.WEST);*/
         panel.add(txt, BorderLayout.CENTER);
-        /*panel.add(label, BorderLayout.CENTER);*/
-
         panel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         return panel;
@@ -106,14 +145,10 @@ public class PanelCrearUsuario extends JPanel {
         panel.setMaximumSize(new Dimension(300, 45));
         panel.setBackground(Color.WHITE);
 
-        PlaceholderTextField txt = new PlaceholderTextField("Ingrese " + texto.toLowerCase());
-        txt.setPreferredSize(new Dimension(200, 30));
+        txtPassword = new JPasswordField();
+        txtPassword.setPreferredSize(new Dimension(200, 30));
 
-        JLabel iconLabel = crearIcono(icono);
-
-        /*panel.add(iconLabel, BorderLayout.WEST);*/
-        panel.add(txt, BorderLayout.CENTER);
-
+        panel.add(txtPassword, BorderLayout.CENTER);
         panel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         return panel;

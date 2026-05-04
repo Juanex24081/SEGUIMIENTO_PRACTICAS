@@ -122,9 +122,15 @@ public class BitacoraDAO {
         ArrayList<BitacoraListaDTO> lista = new ArrayList<>();
 
         String sql = """
-            INSERT INTO bitacoras
-            (id_estudiante, id_sesion, archivo, estado, fecha_envio)
-            VALUES (?, ?, ?, 'ENVIADA', SYSDATE)
+            SELECT 
+                id_sesion,
+                archivo,
+                estado,
+                calificacion,
+                fecha_envio
+            FROM bitacoras
+            WHERE id_estudiante = ?
+            ORDER BY fecha_envio DESC
         """;
 
         try (Connection con = Conexion.getConnection();
@@ -148,7 +154,7 @@ public class BitacoraDAO {
             }
 
         } catch (Exception e) {
-            System.out.println("Error listar bitacoras: " + e.getMessage());
+            System.out.println("BitacoraDAO (Panel Bitácora) error: " + e.getMessage());
         }
 
         return lista;

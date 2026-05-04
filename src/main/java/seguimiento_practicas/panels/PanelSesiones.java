@@ -3,10 +3,12 @@ package seguimiento_practicas.panels;
 import java.awt.Color;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.*;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import seguimiento_practicas.dao.SesionDAO;
 import seguimiento_practicas.model.SesionDTO;
@@ -24,13 +26,20 @@ public class PanelSesiones extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.WHITE);
+        JPanel contenedor = new JPanel();
+        contenedor.setLayout(new BoxLayout(contenedor, BoxLayout.Y_AXIS));
+        contenedor.setBackground(Color.WHITE);
+        contenedor.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
 
-        cargarSesiones();
+        add(new JScrollPane(contenedor));
+
+        cargarSesiones(contenedor);
     }
 
-    private void cargarSesiones() {
 
-        removeAll();
+    private void cargarSesiones(JPanel contenedor) {
+
+        contenedor.removeAll();
 
         Long idUsuario = UsuarioSesion.usuarioActual.getId();
 
@@ -44,11 +53,11 @@ public class PanelSesiones extends JPanel {
                     () -> abrirSesion(s)
             ));
 
-            add(Box.createVerticalStrut(10));
+            contenedor.add(Box.createVerticalStrut(15));
         }
 
-        revalidate();
-        repaint();
+        contenedor.revalidate();
+        contenedor.repaint();
     }
 
     private void abrirSesion(SesionDTO sesion) {
@@ -63,7 +72,4 @@ public class PanelSesiones extends JPanel {
         dialog.setModal(true);
         dialog.setVisible(true);
     }
-
-
-
 }
