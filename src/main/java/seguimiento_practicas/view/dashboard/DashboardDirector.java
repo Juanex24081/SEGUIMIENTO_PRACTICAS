@@ -19,6 +19,7 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 import seguimiento_practicas.panels.PanelCrearUsuario;
+import seguimiento_practicas.panels.PanelPracticas;
 import seguimiento_practicas.panels.PanelUsuarios;
 
 public class DashboardDirector extends JFrame {
@@ -174,7 +175,7 @@ public class DashboardDirector extends JFrame {
 
         btnPracticas.addActionListener(e -> {
             activarBoton(btnPracticas);
-            cambiarPanel(panelVacio("Prácticas"));
+            cambiarPanel(new PanelPracticas());
         });
 
         btnConvenios.addActionListener(e -> {
