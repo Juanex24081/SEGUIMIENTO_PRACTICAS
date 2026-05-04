@@ -1,47 +1,106 @@
 package seguimiento_practicas.panels;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
+import java.awt.*;
+
+import seguimiento_practicas.model.SesionDTO;
 
 public class PanelDetalleSesion extends JPanel {
 
-    public PanelDetalleSesion(int numero) {
+    private SesionDTO sesion;
 
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    public PanelDetalleSesion(SesionDTO sesion) {
 
-        add(new JLabel("Sesión: " + numero));
-        add(new JLabel("Convenio: Empresa XYZ"));
-        add(new JLabel("Asesor: Carlos Pérez"));
-        add(new JLabel("Docente: Ana López"));
-        add(new JLabel("Estado: Pendiente"));
+        this.sesion = sesion;
 
-        add(Box.createVerticalStrut(10));
+        setLayout(new BorderLayout());
+        setBackground(Color.WHITE);
 
-        JButton btnSubir = new JButton("Subir Bitácora");
-
-        btnSubir.addActionListener(e -> subirArchivo());
-
-        add(btnSubir);
-
-        add(Box.createVerticalStrut(10));
-
-        add(new JLabel("Calificación: -"));
-        add(new JLabel("Comentarios: Sin revisar"));
+        add(crearHeader(), BorderLayout.NORTH);
+        add(crearContenido(), BorderLayout.CENTER);
+        add(crearBotones(), BorderLayout.SOUTH);
     }
 
-    private void subirArchivo() {
+    private JPanel crearHeader() {
 
-        JFileChooser fileChooser = new JFileChooser();
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
-        int result = fileChooser.showOpenDialog(this);
+        JLabel titulo = new JLabel("Detalle Sesión #" + sesion.id);
+        titulo.setFont(new Font("Segoe UI", Font.BOLD, 20));
 
-        if (result == JFileChooser.APPROVE_OPTION) {
-            JOptionPane.showMessageDialog(this, "Archivo subido correctamente ✅");
+        panel.add(titulo, BorderLayout.WEST);
+
+        JLabel estado = new JLabel(sesion.estado);
+        estado.setFont(new Font("Segoe UI", Font.BOLD, 14));
+
+        switch (sesion.estado) {
+            case "ENTREGADA" -> estado.setForeground(new Color(39, 174, 96));
+            case "PENDIENTE" -> estado.setForeground(Color.RED);
+            case "EN REVISIÓN" -> estado.setForeground(Color.ORANGE);
         }
+
+        panel.add(estado, BorderLayout.EAST);
+
+        return panel;
+    }
+
+    private JPanel crearContenido() {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+
+        panel.add(crearFila("Empresa:", sesion.convenio));
+        panel.add(Box.createVerticalStrut(10));
+
+        panel.add(crearFila("Docente:", sesion.docente));
+        panel.add(Box.createVerticalStrut(10));
+
+        panel.add(crearFila("Fecha:", sesion.fecha));
+        panel.add(Box.createVerticalStrut(10));
+
+        return panel;
+    }
+
+    private JPanel crearFila(String label, String valor) {
+
+        JPanel fila = new JPanel(new BorderLayout());
+        fila.setBackground(Color.WHITE);
+
+        JLabel lbl = new JLabel(label);
+        lbl.setFont(new Font("Segoe UI", Font.BOLD, 14));
+
+        JLabel val = new JLabel(valor);
+        val.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+
+        fila.add(lbl, BorderLayout.WEST);
+        fila.add(val, BorderLayout.CENTER);
+
+        return fila;
+    }
+
+    private JPanel crearBotones() {
+
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
+
+        JButton btnBitacoras = new JButton("Ver Bitácoras");
+        JButton btnSubir = new JButton("Subir Bitácora");
+
+        panel.add(btnBitacoras);
+        panel.add(btnSubir);
+
+        // acciones (luego las conectamos)
+        btnBitacoras.addActionListener(e ->
+                JOptionPane.showMessageDialog(this, "Abrir bitácoras"));
+
+        btnSubir.addActionListener(e ->
+                JOptionPane.showMessageDialog(this, "Subir archivo"));
+
+        return panel;
     }
 }

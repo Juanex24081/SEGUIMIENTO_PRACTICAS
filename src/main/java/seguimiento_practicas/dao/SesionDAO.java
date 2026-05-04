@@ -10,9 +10,9 @@ import seguimiento_practicas.util.Conexion;
 
 public class SesionDAO {
 
-    public ArrayList<Object[]> listarPorDocente(int idDocente) {
+    public ArrayList<SesionDTO> listarPorDocente(Long idDocente) {
 
-        ArrayList<Object[]> lista = new ArrayList<>();
+        ArrayList<SesionDTO> lista = new ArrayList<>();
 
         String sql = """
             SELECT s.id, s.estado, s.fecha,
@@ -25,18 +25,19 @@ public class SesionDAO {
         try (Connection con = Conexion.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setInt(1, idDocente);
+            ps.setLong(1, idDocente);
 
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
 
-                lista.add(new Object[]{
-                        rs.getInt("id"),
-                        rs.getString("estado"),
-                        rs.getDate("fecha"),
-                        rs.getString("empresa")
-                });
+                lista.add(new SesionDTO(
+                    rs.getInt("id"),
+                    rs.getString("estado"),
+                    rs.getString("empresa"),
+                    rs.getString("docente"),
+                    rs.getString("fecha")
+                ));
             }
 
         } catch (Exception e) {

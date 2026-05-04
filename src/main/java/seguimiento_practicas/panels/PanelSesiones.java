@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.swing.JPanel;
 
 import seguimiento_practicas.dao.SesionDAO;
@@ -41,7 +41,7 @@ public class PanelSesiones extends JPanel {
 
             add(new CardSesion(
                     s,
-                    () -> abrirSesion(s.id)
+                    () -> abrirSesion(s)
             ));
 
             add(Box.createVerticalStrut(10));
@@ -51,7 +51,19 @@ public class PanelSesiones extends JPanel {
         repaint();
     }
 
-    private void abrirSesion(int idSesion) {
-        JOptionPane.showMessageDialog(this, "Abrir sesión " + idSesion);
+    private void abrirSesion(SesionDTO sesion) {
+
+        JDialog dialog = new JDialog();
+        dialog.setTitle("Detalle Sesión");
+        dialog.setSize(500, 400);
+        dialog.setLocationRelativeTo(this);
+
+        dialog.add(new PanelDetalleSesion(sesion));
+
+        dialog.setModal(true);
+        dialog.setVisible(true);
     }
+
+
+
 }
