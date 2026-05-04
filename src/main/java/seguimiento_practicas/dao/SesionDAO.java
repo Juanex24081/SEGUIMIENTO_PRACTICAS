@@ -54,17 +54,21 @@ public class SesionDAO {
         ArrayList<SesionDTO> lista = new ArrayList<>();
 
         String sql = """
-            SELECT s.id, s.estado, s.fecha,
-                   c.empresa,
-                   es.estado_entrega
+            SELECT 
+                s.id AS id,
+                s.estado AS estado,
+                c.empresa AS empresa,
+                u.nombre AS docente,
+                s.fecha AS fecha
             FROM sesiones s
+            JOIN convenios c ON s.id_convenio = c.id
+            JOIN usuarios u ON s.id_docente = u.id
             JOIN estudiante_sesion es ON es.id_sesion = s.id
-            JOIN convenios c ON c.id = s.id_convenio
             WHERE es.id_estudiante = ?
         """;
 
         try (Connection con = Conexion.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+            PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idEstudiante);
 
