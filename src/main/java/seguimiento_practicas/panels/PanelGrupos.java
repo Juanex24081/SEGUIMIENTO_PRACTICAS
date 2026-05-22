@@ -1,18 +1,33 @@
 package seguimiento_practicas.panels;
 
-import seguimiento_practicas.dao.PracticasDAO;
-import seguimiento_practicas.model.CrearGrupoDTO;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.util.ArrayList;
 
-public class PanelPracticas extends JPanel {
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
-    private PracticasDAO dao = new PracticasDAO();
-    private JPanel listaGrupos; // 🔥 GLOBAL (IMPORTANTE)
+import seguimiento_practicas.dao.GruposDAO;
+import seguimiento_practicas.model.CrearGrupoDTO;
 
-    public PanelPracticas() {
+public class PanelGrupos extends JPanel {
+
+    private GruposDAO dao = new GruposDAO();
+    private JPanel listaGrupos; // GLOBAL (IMPORTANTE)
+
+    public PanelGrupos() {
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -33,17 +48,17 @@ public class PanelPracticas extends JPanel {
         contenedor.add(top, BorderLayout.NORTH);
 
         // ================= LISTA =================
-        listaGrupos = new JPanel(); // 🔥 NO LOCAL
+        listaGrupos = new JPanel(); // NO LOCAL
         listaGrupos.setLayout(new BoxLayout(listaGrupos, BoxLayout.Y_AXIS));
         listaGrupos.setBackground(Color.WHITE);
 
         JScrollPane scroll = new JScrollPane(listaGrupos);
         contenedor.add(scroll, BorderLayout.CENTER);
 
-        // 🔥 EVENTO
+        // EVENTO
         btnCrearGrupo.addActionListener(e -> abrirDialogo());
 
-        // 🔥 CARGAR AL INICIO
+        // CARGAR AL INICIO
         cargarGrupos();
     }
 

@@ -18,8 +18,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
+import seguimiento_practicas.panels.PanelConvenios;
 import seguimiento_practicas.panels.PanelCrearUsuario;
-import seguimiento_practicas.panels.PanelPracticas;
+import seguimiento_practicas.panels.PanelGrupos;
 import seguimiento_practicas.panels.PanelUsuarios;
 
 public class DashboardDirector extends JFrame {
@@ -144,7 +145,7 @@ public class DashboardDirector extends JFrame {
 
         JButton btnUsuarios = crearBoton("Usuarios", "user.png");
         JButton btnCrear = crearBoton("Crear", "add.png");
-        JButton btnPracticas = crearBoton("Prácticas", "practice.png");
+        JButton btnGrupos = crearBoton("Grupos", "practice.png");
         JButton btnConvenios = crearBoton("Convenios","convenio.png");
 
         sidebar.add(Box.createVerticalStrut(20));
@@ -152,7 +153,7 @@ public class DashboardDirector extends JFrame {
         sidebar.add(Box.createVerticalStrut(10));
         sidebar.add(btnCrear);
         sidebar.add(Box.createVerticalStrut(20));
-        sidebar.add(btnPracticas);
+        sidebar.add(btnGrupos);
         sidebar.add(Box.createVerticalStrut(10));
         sidebar.add(btnConvenios);
 
@@ -173,14 +174,14 @@ public class DashboardDirector extends JFrame {
             cambiarPanel(new PanelCrearUsuario());
         });
 
-        btnPracticas.addActionListener(e -> {
-            activarBoton(btnPracticas);
-            cambiarPanel(new PanelPracticas());
+        btnGrupos.addActionListener(e -> {
+            activarBoton(btnGrupos);
+            cambiarPanel(new PanelGrupos());
         });
 
         btnConvenios.addActionListener(e -> {
             activarBoton(btnConvenios);
-            cambiarPanel(panelVacio("Convenios"));
+            cambiarPanel(new PanelConvenios());
         });
 
         // INICIAL

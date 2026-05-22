@@ -1,12 +1,14 @@
 package seguimiento_practicas.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+
 import seguimiento_practicas.model.CrearGrupoDTO;
 import seguimiento_practicas.util.Conexion;
 
-import java.sql.*;
-import java.util.ArrayList;
-
-public class PracticasDAO {
+public class GruposDAO {
 
     // CREAR GRUPO
     public void crearGrupo(CrearGrupoDTO grupo) {

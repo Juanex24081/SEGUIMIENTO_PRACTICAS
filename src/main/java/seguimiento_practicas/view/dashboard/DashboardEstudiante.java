@@ -23,6 +23,7 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 import seguimiento_practicas.panels.PanelBitacoras;
+import seguimiento_practicas.panels.PanelResumen;
 import seguimiento_practicas.panels.PanelSesiones;
 
 public class DashboardEstudiante extends JFrame {
@@ -144,9 +145,12 @@ public class DashboardEstudiante extends JFrame {
         sidebar.setPreferredSize(new Dimension(220, 0));
         sidebar.setBackground(new Color(44, 62, 80));
 
+        JButton btnResumen = crearBoton("Resumen", "user.png");
         JButton btnSesiones = crearBoton("Sesiones", "user.png");
         JButton btnBitacoras = crearBoton("Bitácoras", "user.png");
 
+        sidebar.add(Box.createVerticalStrut(20));
+        sidebar.add(btnResumen);
         sidebar.add(Box.createVerticalStrut(20));
         sidebar.add(btnSesiones);
         sidebar.add(Box.createVerticalStrut(10));
@@ -159,6 +163,11 @@ public class DashboardEstudiante extends JFrame {
         add(panelContenido, BorderLayout.CENTER);
 
         // EVENTOS
+        btnResumen.addActionListener(e -> {
+            activarBoton(btnResumen);
+            cambiarPanel(new PanelResumen());
+        });
+
         btnSesiones.addActionListener(e -> {
             activarBoton(btnSesiones);
             cambiarPanel(new PanelSesiones());
