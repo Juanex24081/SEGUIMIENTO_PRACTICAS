@@ -15,11 +15,11 @@ import seguimiento_practicas.model.SesionDTO;
 import seguimiento_practicas.session.UsuarioSesion;
 import seguimiento_practicas.ui_components.CardSesion;
 
-public class PanelSesiones extends JPanel {
+public class PanelSesionesAsesor extends JPanel {
 
     private SesionDAO dao = new SesionDAO();
 
-    public PanelSesiones() {
+    public PanelSesionesAsesor() {
 
         /* DEBUG */
         System.out.println("Usuario logueado ID: " + UsuarioSesion.usuarioActual.getId());
@@ -44,11 +44,11 @@ public class PanelSesiones extends JPanel {
         Long idUsuario = UsuarioSesion.usuarioActual.getId();
 
         ArrayList<SesionDTO> sesiones =
-                dao.listarPorEstudiante(idUsuario);
+                dao.listarPorAsesor(idUsuario);
 
         for (SesionDTO s : sesiones) {
 
-            contenedor.add(new CardSesion(
+            add(new CardSesion(
                     s,
                     () -> abrirSesion(s)
             ));

@@ -72,6 +72,67 @@ public class AsesorDAO {
         return lista;
     }
 
+
+    // =========================
+    // LISTAR SESIONES
+    // =========================
+
+    public ArrayList<BitacoraAsesorDTO> listarSesiones(int idAsesor) {
+
+        ArrayList<BitacoraAsesorDTO> lista =
+                new ArrayList<>();
+
+        String sql = """
+            SELECT *
+            FROM VISTA_ASESOR_BITACORAS
+            WHERE id_asesor = ?
+        """;
+
+        try (
+
+            Connection con =
+                    Conexion.getConnection();
+
+            PreparedStatement ps =
+                    con.prepareStatement(sql)
+
+        ) {
+
+            ps.setInt(1, idAsesor);
+
+            ResultSet rs =
+                    ps.executeQuery();
+
+            while (rs.next()) {
+
+                lista.add(
+
+                    new BitacoraAsesorDTO(
+
+                        rs.getInt("id_bitacora"),
+
+                        rs.getString("estudiante"),
+
+                        rs.getInt("id_sesion"),
+
+                        rs.getString("archivo"),
+
+                        rs.getString("estado"),
+
+                        rs.getInt("calificacion"),
+
+                        rs.getString("fecha_envio")
+                    )
+                );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return lista;
+    }
+
     // =========================
     // LISTAR COMENTARIOS
     // =========================
@@ -133,42 +194,30 @@ public class AsesorDAO {
     // COMENTAR BITÁCORA
     // =========================
 
-    public void comentarBitacora(
+    public void comentarBitacora(int idBitacora,int idUsuario,String comentario) {
+        String sql =
+                "{CALL sp_comentar_bitacora(?,?,?)}";
 
-        int idBitacora,
-        int idUsuario,
-        String comentario
+        try (
 
-) {
+            Connection con = Conexion.getConnection();
 
-    String sql =
-            "{CALL sp_comentar_bitacora(?,?,?)}";
+            CallableStatement cs = con.prepareCall(sql)
 
-    try (
+        ) {
 
-        Connection con =
-                Conexion.getConnection();
+            con.setAutoCommit(false);
 
-        CallableStatement cs =
-                con.prepareCall(sql)
+            cs.setInt(1, idBitacora);
+            cs.setInt(2, idUsuario);
+            cs.setString(3, comentario);
 
-    ) {
+            cs.execute();
 
-        con.setAutoCommit(false);
+            con.commit();
 
-        cs.setInt(1, idBitacora);
-
-        cs.setInt(2, idUsuario);
-
-        cs.setString(3, comentario);
-
-        cs.execute();
-
-        con.commit();
-
-    } catch (Exception e) {
-
-        e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-    
-}}   
+}

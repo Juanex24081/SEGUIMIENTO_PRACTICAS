@@ -24,15 +24,15 @@ import seguimiento_practicas.dao.AsesorDAO;
 import seguimiento_practicas.model.BitacoraAsesorDTO;
 import seguimiento_practicas.model.ComentarioDTO;
 
-public class PanelAsesor extends JPanel {
+public class PanelBitacorasAsesor extends JPanel {
 
     private AsesorDAO dao = new AsesorDAO();
 
-    private JPanel contenido;
+    private JPanel lista;
 
     private int idAsesor;
 
-    public PanelAsesor(int idAsesor) {
+    public PanelBitacorasAsesor(int idAsesor) {
 
         this.idAsesor = idAsesor;
 
@@ -50,14 +50,14 @@ public class PanelAsesor extends JPanel {
 
         add(titulo, BorderLayout.NORTH);
 
-        contenido = new JPanel();
+        lista = new JPanel();
 
-        contenido.setLayout(
-                new BoxLayout(contenido, BoxLayout.Y_AXIS)
+        lista.setLayout(
+                new BoxLayout(lista, BoxLayout.Y_AXIS)
         );
 
         JScrollPane scroll =
-                new JScrollPane(contenido);
+                new JScrollPane(lista);
 
         add(scroll, BorderLayout.CENTER);
 
@@ -70,7 +70,7 @@ public class PanelAsesor extends JPanel {
 
     private void cargarBitacoras() {
 
-        contenido.removeAll();
+        lista.removeAll();
 
         ArrayList<BitacoraAsesorDTO> bitacoras =
                 dao.listarBitacoras(idAsesor);
@@ -114,13 +114,13 @@ public class PanelAsesor extends JPanel {
 
             card.add(btnVer, BorderLayout.EAST);
 
-            contenido.add(card);
+            lista.add(card);
 
-            contenido.add(Box.createVerticalStrut(10));
+            lista.add(Box.createVerticalStrut(10));
         }
 
-        contenido.revalidate();
-        contenido.repaint();
+        lista.revalidate();
+        lista.repaint();
     }
 
     // =========================

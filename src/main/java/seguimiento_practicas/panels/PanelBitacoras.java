@@ -1,8 +1,11 @@
 package seguimiento_practicas.panels;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
 
 import seguimiento_practicas.dao.BitacoraDAO;
 import seguimiento_practicas.model.BitacoraListaDTO;

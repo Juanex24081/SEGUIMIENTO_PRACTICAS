@@ -2,114 +2,29 @@ package seguimiento_practicas.view.dashboard;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Image;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.Timer;
 
 import seguimiento_practicas.panels.PanelConvenios;
 import seguimiento_practicas.panels.PanelCrearUsuario;
 import seguimiento_practicas.panels.PanelGrupos;
+import seguimiento_practicas.panels.PanelSesiones;
 import seguimiento_practicas.panels.PanelUsuarios;
+import seguimiento_practicas.util.SideBar;
 
 public class DashboardDirector extends JFrame {
 
-    private JPanel panelContenido;
-    private JPanel sidebar;
-    private JButton botonActivo = null;
-    private boolean sidebarVisible = true;
-
-    // ACTIVAR BOTÓN
-    private void activarBoton(JButton btn) {
-        if (botonActivo != null) {
-            botonActivo.setBackground(new Color(52, 73, 94));
-        }
-        btn.setBackground(new Color(39, 174, 96));
-        botonActivo = btn;
-    }
-
-    // BOTÓN CON ICONO
-    private JButton crearBoton(String texto, String icono) {
-    JButton btn = new JButton(texto);
-
-    try {
-        java.net.URL url = getClass().getResource("/icons/" + icono);
-
-        /*System.out.println(System.getProperty("user.dir"));*/
-        /*System.out.println(getClass().getResource("/icons/user.png"));*/
-
-        if (url != null) {
-            ImageIcon icon = new ImageIcon(url);
-
-            // FORZAR TAMAÑO SIEMPRE
-            Image img = icon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
-
-            btn.setIcon(new ImageIcon(img));
-        } else {
-            System.out.println("No se encontró el icono: " + icono);
-        }
-
-        } catch (Exception e) {
-            System.out.println("Error cargando icono: " + icono);
-        }
-
-        btn.setHorizontalAlignment(SwingConstants.LEFT);
-        btn.setIconTextGap(10);
-
-        btn.setBackground(new Color(52, 73, 94));
-        btn.setForeground(Color.WHITE);
-        btn.setFont(new Font("Times New Roman", Font.BOLD, 14));
-
-        btn.setFocusPainted(false);
-        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        btn.setMaximumSize(new Dimension(200, 45));
-        btn.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        return btn;
-
-    }
-
-    // CAMBIO DE PANEL CON "ANIMACIÓN"
-    private void cambiarPanel(JPanel nuevo) {
-        panelContenido.removeAll();
-
-        // animación simple (fade simulada)
-        Timer timer = new Timer(10, null);
-        timer.addActionListener(e -> {
-            panelContenido.add(nuevo, BorderLayout.CENTER);
-            panelContenido.revalidate();
-            panelContenido.repaint();
-            timer.stop();
-        });
-        timer.start();
-    }
-
-    // SIDEBAR COLAPSABLE
-    private void toggleSidebar() {
-        sidebarVisible = !sidebarVisible;
-
-        if (sidebarVisible) {
-            sidebar.setPreferredSize(new Dimension(220, 0));
-        } else {
-            sidebar.setPreferredSize(new Dimension(60, 0));
-        }
-
-        sidebar.revalidate();
-    }
-
     public DashboardDirector() {
+
+        // SIDEBAR
+        SideBar sidebarUtil = new SideBar();
 
         setTitle("Panel Director");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -126,7 +41,7 @@ public class DashboardDirector extends JFrame {
         btnMenu.setBackground(new Color(33, 47, 61));
         btnMenu.setBorderPainted(false);
 
-        btnMenu.addActionListener(e -> toggleSidebar());
+        btnMenu.addActionListener(e -> sidebarUtil.toggleSidebar());
 
         JLabel usuario = new JLabel("Director");
         usuario.setForeground(Color.WHITE);
@@ -138,55 +53,65 @@ public class DashboardDirector extends JFrame {
         add(topbar, BorderLayout.NORTH);
 
         // SIDEBAR
-        sidebar = new JPanel();
-        sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
-        sidebar.setPreferredSize(new Dimension(220, 0));
-        sidebar.setBackground(new Color(44, 62, 80));
+        sidebarUtil.sidebar = new JPanel();
+        sidebarUtil.sidebar.setLayout(new BoxLayout(sidebarUtil.sidebar, BoxLayout.Y_AXIS));
+        sidebarUtil.sidebar.setPreferredSize(new Dimension(220, 0));
+        sidebarUtil.sidebar.setBackground(new Color(44, 62, 80));
 
-        JButton btnUsuarios = crearBoton("Usuarios", "user.png");
-        JButton btnCrear = crearBoton("Crear", "add.png");
-        JButton btnGrupos = crearBoton("Grupos", "practice.png");
-        JButton btnConvenios = crearBoton("Convenios","convenio.png");
+        JButton btnUsuarios = sidebarUtil.crearBoton("Usuarios", "user.png");
+        JButton btnCrear = sidebarUtil.crearBoton("Crear", "add.png");
+        JButton btnGrupos = sidebarUtil.crearBoton("Grupos", "practice.png");
+        JButton btnSesiones = sidebarUtil.crearBoton("Sesiones", "user.png");
+        JButton btnConvenios = sidebarUtil.crearBoton("Convenios","convenio.png");
 
-        sidebar.add(Box.createVerticalStrut(20));
-        sidebar.add(btnUsuarios);
-        sidebar.add(Box.createVerticalStrut(10));
-        sidebar.add(btnCrear);
-        sidebar.add(Box.createVerticalStrut(20));
-        sidebar.add(btnGrupos);
-        sidebar.add(Box.createVerticalStrut(10));
-        sidebar.add(btnConvenios);
+        sidebarUtil.sidebar.add(Box.createVerticalStrut(20));
+        sidebarUtil.sidebar.add(btnUsuarios);
+        sidebarUtil.sidebar.add(Box.createVerticalStrut(10));
+        sidebarUtil.sidebar.add(btnCrear);
+        sidebarUtil.sidebar.add(Box.createVerticalStrut(20));
+        sidebarUtil.sidebar.add(btnGrupos);
+        sidebarUtil.sidebar.add(Box.createVerticalStrut(20));
+        sidebarUtil.sidebar.add(btnSesiones);
+        sidebarUtil.sidebar.add(Box.createVerticalStrut(10));
+        sidebarUtil.sidebar.add(btnConvenios);
 
-        add(sidebar, BorderLayout.WEST);
+        add(sidebarUtil.sidebar, BorderLayout.WEST);
+
+        add(sidebarUtil.sidebar, BorderLayout.WEST);
 
         // PANEL CONTENIDO
-        panelContenido = new JPanel(new BorderLayout());
-        add(panelContenido, BorderLayout.CENTER);
+        sidebarUtil.panelContenido = new JPanel(new BorderLayout());
+        add(sidebarUtil.panelContenido, BorderLayout.CENTER);
 
         // EVENTOS
         btnUsuarios.addActionListener(e -> {
-            activarBoton(btnUsuarios);
-            cambiarPanel(new PanelUsuarios());
+            sidebarUtil.activarBoton(btnUsuarios);
+            sidebarUtil.cambiarPanel(new PanelUsuarios());
         });
 
         btnCrear.addActionListener(e -> {
-            activarBoton(btnCrear);
-            cambiarPanel(new PanelCrearUsuario());
+            sidebarUtil.activarBoton(btnCrear);
+            sidebarUtil.cambiarPanel(new PanelCrearUsuario());
         });
 
         btnGrupos.addActionListener(e -> {
-            activarBoton(btnGrupos);
-            cambiarPanel(new PanelGrupos());
+            sidebarUtil.activarBoton(btnGrupos);
+            sidebarUtil.cambiarPanel(new PanelGrupos());
+        });
+
+        btnSesiones.addActionListener(e -> {
+            sidebarUtil.activarBoton(btnSesiones);
+            sidebarUtil.cambiarPanel(new PanelSesiones());
         });
 
         btnConvenios.addActionListener(e -> {
-            activarBoton(btnConvenios);
-            cambiarPanel(new PanelConvenios());
+            sidebarUtil.activarBoton(btnConvenios);
+            sidebarUtil.cambiarPanel(new PanelConvenios());
         });
 
         // INICIAL
-        activarBoton(btnUsuarios);
-        cambiarPanel(new PanelUsuarios());
+        sidebarUtil.activarBoton(btnUsuarios);
+        sidebarUtil.cambiarPanel(new PanelUsuarios());
     }
 
     private JPanel panelVacio(String nombre) {
@@ -195,3 +120,4 @@ public class DashboardDirector extends JFrame {
         return panel;
     }
 }
+

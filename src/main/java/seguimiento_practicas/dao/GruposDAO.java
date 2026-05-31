@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import seguimiento_practicas.model.CrearGrupoDTO;
 import seguimiento_practicas.util.Conexion;
 
+import seguimiento_practicas.session.UsuarioSesion;
+
 public class GruposDAO {
 
     // CREAR GRUPO
@@ -28,6 +30,37 @@ public class GruposDAO {
             System.out.println("Error crear grupo: " + e.getMessage());
         }
     }
+
+    // LISTAR DOCENTE UNICO POR ID
+    public ArrayList<Object[]> listarDocenteUnico() {
+
+        ArrayList<Object[]> lista = new ArrayList<>();
+
+        String sql = "SELECT id, nombre FROM usuarios WHERE rol = 'DOCENTE' AND id = ?";
+
+        Long idDocente = UsuarioSesion.usuarioActual.getId();
+
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setLong(1, idDocente);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                lista.add(new Object[]{
+                        rs.getInt("id"),
+                        rs.getString("nombre")
+                });
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error docentes: " + e.getMessage());
+        }
+
+        return lista;
+    }
+
 
     // LISTAR DOCENTES
     public ArrayList<Object[]> listarDocentes() {
@@ -53,6 +86,7 @@ public class GruposDAO {
 
         return lista;
     }
+
 
     // LISTAR ASESORES
     public ArrayList<Object[]> listarAsesores() {
@@ -149,4 +183,218 @@ public class GruposDAO {
         return lista;
     }
 
+    public ArrayList<String> obtenerEstudiantesVista(int idGrupo) {
+
+        ArrayList<String> lista = new ArrayList<>();
+
+        String sql = """
+            SELECT estudiante
+            FROM vw_grupos_estudiantes
+            WHERE id_grupo = ?
+            ORDER BY estudiante
+        """;
+
+        try (
+            Connection con = Conexion.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql)
+        ) {
+
+            ps.setInt(1, idGrupo);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                lista.add(
+                    rs.getString("estudiante")
+                );
+
+            }
+
+        } catch (Exception e) {
+
+            System.out.println(
+                "Error vista estudiantes: "
+                + e.getMessage()
+            );
+        }
+
+        return lista;
+    }
+
+    public ArrayList<Object[]> listarReporteGruposDirector() {
+
+        ArrayList<Object[]> lista = new ArrayList<>();
+
+        String sql = """
+            SELECT *
+            FROM vw_reporte_grupos
+        """;
+
+        try (
+            Connection con = Conexion.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()
+        ) {
+
+            while (rs.next()) {
+
+                lista.add(new Object[]{
+
+                    rs.getInt("id_grupo"),
+                    rs.getString("nombre_grupo"),
+                    rs.getString("docente"),
+                    rs.getString("asesor"),
+                    rs.getInt("total_estudiantes"),
+                    rs.getString("id_docente")
+
+                });
+
+            }
+
+        } catch (Exception e) {
+
+            System.out.println(e.getMessage());
+
+        }
+
+        return lista;
+    }
+
+    public ArrayList<Object[]> listarReporteGruposDocente(Long idDocente) {
+
+        ArrayList<Object[]> lista = new ArrayList<>();
+
+        String sql = """
+            SELECT *
+            FROM vw_reporte_grupos
+            WHERE id_docente = ?
+        """;
+
+        try (
+            Connection con = Conexion.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+        ) {
+
+            ps.setLong(1, idDocente);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                lista.add(new Object[]{
+
+                    rs.getInt("id_grupo"),
+                    rs.getString("nombre_grupo"),
+                    rs.getString("docente"),
+                    rs.getString("asesor"),
+                    rs.getInt("total_estudiantes"),
+                    rs.getString("id_docente")
+
+                });
+
+            }
+
+        } catch (Exception e) {
+
+            System.out.println(e.getMessage());
+
+        }
+
+        return lista;
+    }
+
+    public ArrayList<Object[]> obtenerSesionesGrupo(int idGrupo) {
+
+        ArrayList<Object[]> lista = new ArrayList<>();
+
+        String sql = """
+            SELECT id,
+                fecha,
+                horas,
+                estado
+            FROM vw_grupos_sesiones
+            WHERE id_grupo = ?
+            ORDER BY fecha
+        """;
+
+        try (
+            Connection con = Conexion.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql)
+        ) {
+
+            ps.setInt(1, idGrupo);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                lista.add(new Object[]{
+
+                    rs.getInt("id"),
+                    rs.getDate("fecha"),
+                    rs.getInt("horas"),
+                    rs.getString("estado")
+
+                });
+
+            }
+
+        } catch (Exception e) {
+
+            System.out.println(
+                    "Error sesiones grupo: "
+                    + e.getMessage()
+            );
+        }
+
+        return lista;
+    }
+
+    public ArrayList<Object[]> obtenerBitacorasSesion(int idSesion) {
+
+        ArrayList<Object[]> lista = new ArrayList<>();
+
+        String sql = """
+            SELECT estudiante,
+                estado,
+                calificacion,
+                fecha_envio
+            FROM vw_sesion_bitacoras
+            WHERE id_sesion = ?
+            ORDER BY estudiante
+        """;
+
+        try (
+            Connection con = Conexion.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql)
+        ) {
+
+            ps.setInt(1, idSesion);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                lista.add(new Object[]{
+
+                    rs.getString("estudiante"),
+                    rs.getString("estado"),
+                    rs.getInt("calificacion"),
+                    rs.getDate("fecha_envio")
+
+                });
+
+            }
+
+        } catch (Exception e) {
+
+            System.out.println(
+                    "Error bitácoras: "
+                    + e.getMessage()
+            );
+        }
+
+        return lista;
+    }
 }

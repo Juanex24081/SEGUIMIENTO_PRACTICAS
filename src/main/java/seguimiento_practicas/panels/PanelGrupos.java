@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
 import seguimiento_practicas.dao.GruposDAO;
@@ -69,32 +70,34 @@ public class PanelGrupos extends JPanel {
 
         listaGrupos.removeAll();
 
-        ArrayList<Object[]> grupos = dao.listarGrupos();
+        ArrayList<Object[]> gruposDirector =dao.listarReporteGruposDirector();
 
-        System.out.println("Cantidad grupos: " + grupos.size()); // DEBUG
+        System.out.println("Cantidad grupos: " + gruposDirector.size()); // DEBUG
 
-        for (Object[] g : grupos) {
+        for (Object[] gDir : gruposDirector) {
 
             JPanel card = new JPanel(new BorderLayout());
             card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 70));
             card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
             card.setBackground(Color.WHITE);
 
-            String texto = "Grupo: " + g[1] +
-                    " | Docente: " + g[2] +
-                    " | Asesor: " + g[3];
+            String texto =
+            "Grupo: " + gDir[1]
+                    + " | Docente: " + gDir[2]
+                    + " | Asesor: " + gDir[3]
+                    + " | Estudiantes: " + gDir[4];
 
             card.add(new JLabel(texto), BorderLayout.CENTER);
 
-            int idGrupo = (int) g[0];
+            int idGrupo = (int) gDir[0];
 
             JButton btnVer = new JButton("Ver");
 
             btnVer.addActionListener(e -> abrirDetalleGrupo(
                     idGrupo,
-                    g[1].toString(), // nombre grupo
-                    g[2].toString(), // docente
-                    g[3].toString()  // asesor
+                    gDir[1].toString(), // nombre grupo
+                    gDir[2].toString(), // docente
+                    gDir[3].toString()  // asesor
             ));
             
             card.add(btnVer, BorderLayout.EAST);
@@ -109,40 +112,213 @@ public class PanelGrupos extends JPanel {
 
     /* BOTÓN "VER" */
 
-    private void abrirDetalleGrupo(int idGrupo, String nombre, String docente, String asesor) {
+    private void abrirDetalleGrupo(
+        int idGrupo,
+        String nombre,
+        String docente,
+        String asesor) {
 
         JDialog dialog = new JDialog();
-        dialog.setTitle("Detalle del Grupo");
-        dialog.setSize(500, 400);
+        dialog.setTitle("Detalle Grupo");
+        dialog.setSize(700, 600);
         dialog.setLocationRelativeTo(this);
         dialog.setLayout(new BorderLayout());
 
-        // ================= TOP =================
-        JPanel top = new JPanel(new GridLayout(3,1));
+        // ===== DATOS DEL GRUPO =====
+
+        JPanel top = new JPanel(new GridLayout(3, 1));
+
         top.add(new JLabel("Grupo: " + nombre));
         top.add(new JLabel("Docente: " + docente));
         top.add(new JLabel("Asesor: " + asesor));
 
         dialog.add(top, BorderLayout.NORTH);
 
-        // ================= CENTRO =================
-        JPanel centro = new JPanel();
-        centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
+        // ===== TABS =====
 
-        ArrayList<String> estudiantes = dao.listarEstudiantesPorGrupo(idGrupo);
+        JTabbedPane tabs = new JTabbedPane();
+
+        // =========================
+        // TAB ESTUDIANTES
+        // =========================
+
+        JPanel panelEstudiantes = new JPanel();
+        panelEstudiantes.setLayout(
+                new BoxLayout(
+                        panelEstudiantes,
+                        BoxLayout.Y_AXIS
+                )
+        );
+
+        ArrayList<String> estudiantes =
+                dao.obtenerEstudiantesVista(idGrupo);
 
         if (estudiantes.isEmpty()) {
-            centro.add(new JLabel("No hay estudiantes en este grupo"));
+
+                panelEstudiantes.add(
+                        new JLabel(
+                                "No hay estudiantes"
+                        )
+                );
+
         } else {
-            for (String est : estudiantes) {
-                centro.add(new JLabel("• " + est));
-            }
+
+                for (String e : estudiantes) {
+
+                panelEstudiantes.add(
+                        new JLabel("• " + e)
+                );
+                }
         }
 
-        dialog.add(new JScrollPane(centro), BorderLayout.CENTER);
+        // =========================
+        // TAB SESIONES
+        // =========================
+
+        JPanel panelSesiones = new JPanel();
+
+        panelSesiones.setLayout(
+                new BoxLayout(
+                        panelSesiones,
+                        BoxLayout.Y_AXIS
+                )
+        );
+
+        ArrayList<Object[]> sesiones =
+                dao.obtenerSesionesGrupo(idGrupo);
+
+        if (sesiones.isEmpty()) {
+
+                panelSesiones.add(
+                        new JLabel(
+                                "No hay sesiones"
+                        )
+                );
+
+        } else {
+
+                for (Object[] s : sesiones) {
+
+                JPanel fila = new JPanel(
+                        new FlowLayout(
+                                FlowLayout.LEFT
+                        )
+                );
+
+                JLabel lbl = new JLabel(
+                        "Sesión "
+                        + s[0]
+                        + " | Fecha: "
+                        + s[1]
+                        + " | Horas: "
+                        + s[2]
+                        + " | Estado: "
+                        + s[3]
+                );
+
+                JButton btnBitacoras =
+                        new JButton(
+                                "Ver Bitácoras"
+                        );
+
+                int idSesion = (int) s[0];
+
+                btnBitacoras.addActionListener(
+                        ev -> abrirBitacorasSesion(idSesion)
+                );
+
+                fila.add(lbl);
+                fila.add(btnBitacoras);
+
+                panelSesiones.add(fila);
+                }
+        }
+
+        // ===== AGREGAR TABS =====
+
+        tabs.addTab(
+                "Estudiantes",
+                new JScrollPane(panelEstudiantes)
+        );
+
+        tabs.addTab(
+                "Sesiones",
+                new JScrollPane(panelSesiones)
+        );
+
+        dialog.add(
+                tabs,
+                BorderLayout.CENTER
+        );
 
         dialog.setVisible(true);
-    }
+        }
+
+        private void abrirBitacorasSesion(
+                int idSesion) {
+
+        JDialog dialog = new JDialog();
+
+        dialog.setTitle(
+                "Bitácoras Sesión "
+                + idSesion
+        );
+
+        dialog.setSize(600,400);
+
+        dialog.setLocationRelativeTo(this);
+
+        JPanel panel = new JPanel();
+
+        panel.setLayout(
+                new BoxLayout(
+                        panel,
+                        BoxLayout.Y_AXIS
+                )
+        );
+
+        ArrayList<Object[]> bitacoras =
+                dao.obtenerBitacorasSesion(
+                        idSesion
+                );
+
+        if(bitacoras.isEmpty()) {
+
+                panel.add(
+                        new JLabel(
+                                "No hay bitácoras"
+                        )
+                );
+
+        } else {
+
+                for(Object[] b : bitacoras) {
+
+                panel.add(
+                        new JLabel(
+
+                        "Estudiante: "
+                        + b[0]
+
+                        + " | Estado: "
+                        + b[1]
+
+                        + " | Nota: "
+                        + b[2]
+
+                        + " | Fecha: "
+                        + b[3]
+                        )
+                );
+                }
+        }
+
+        dialog.add(
+                new JScrollPane(panel)
+        );
+
+        dialog.setVisible(true);
+        }
 
     // ================= CREAR =================
     private void abrirDialogo() {
